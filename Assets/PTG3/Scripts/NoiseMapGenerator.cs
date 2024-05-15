@@ -4,7 +4,16 @@ using UnityEngine;
 
 public class NoiseMapGenerator
 {
-    public static Dictionary<Vector2Int, float[,]> GeneratePerlinNoiseWorldHeightMap(int worldChunkWidth, int worldChunkHeight, int chunkWidth, int chunkHeight, float worldScale)
+    public static Dictionary<Vector2Int, float[,]> GeneratePerlinNoiseWorldHeightMap(
+        int worldChunkWidth, 
+        int worldChunkHeight, 
+        int chunkWidth, 
+        int chunkHeight, 
+        float worldScale, 
+        bool falloff, 
+        float mainlandSize,
+        float falloffTransitionWidth,
+        AnimationCurve heightMapHeightCurve)
     {
         var worldDictionary = new Dictionary<Vector2Int, float[,]>();
 
@@ -33,7 +42,13 @@ public class NoiseMapGenerator
 
                         var sample = Mathf.PerlinNoise(xChunkSamplePosition, yChunkSamplePosition);
 
-                        chunkHeightMap[xChunk, yChunk] = Mathf.Clamp01(sample);
+                        if (falloff)
+                        {
+                            float falloffValue = EvaluateWorldFalloffMap(xWorld * chunkWidth + xChunk, yWorld * chunkHeight + yChunk, worldWidth, worldHeight, mainlandSize, falloffTransitionWidth);
+                            sample -= falloffValue;
+                        }
+
+                        chunkHeightMap[xChunk, yChunk] = Mathf.Clamp01(heightMapHeightCurve.Evaluate(sample));
                     }
                 }
 
@@ -42,5 +57,20 @@ public class NoiseMapGenerator
         }
 
         return worldDictionary;
+    }
+
+    private static float EvaluateWorldFalloffMap(int x, int y, int worldWidth, int worldHeight, float mainlandSize, float falloffTransitionWidth)
+    {
+        float centerX = worldWidth / 2f;
+        float centerY = worldHeight / 2f;
+
+        float distanceX = (x - centerX) / (worldWidth * mainlandSize / 2f);
+        float distanceY = (y - centerY) / (worldHeight * mainlandSize / 2f);
+
+        float distance = Mathf.Sqrt(distanceX * distanceX + distanceY * distanceY);
+
+        float falloffValue = Mathf.Pow(distance, falloffTransitionWidth);
+
+        return Mathf.Clamp01(falloffValue);
     }
 }

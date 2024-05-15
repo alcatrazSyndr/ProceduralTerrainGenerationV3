@@ -123,6 +123,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &236232024
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 236232025}
+  m_Layer: 0
+  m_Name: WorldChunkController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &236232025
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236232024}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,7 +373,51 @@ MonoBehaviour:
   _chunkHeight: 255
   _worldWidth: 1
   _worldHeight: 1
-  _worldScale: 10
+  _worldScale: 4
+  _falloff: 1
+  _mainlandSize: 0.9
+  _falloffTransitionWidth: 6
+  _heightMapHeightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _heightColorData:
+  - HeightColor: {r: 0, g: 0.20594147, b: 0.9433962, a: 1}
+    HeightValue: 0
+  - HeightColor: {r: 0, g: 0.25797978, b: 0.94509804, a: 1}
+    HeightValue: 0.1
+  - HeightColor: {r: 1, g: 0.90845865, b: 0.6084906, a: 1}
+    HeightValue: 0.2
+  - HeightColor: {r: 0.077574484, g: 0.8207547, b: 0, a: 1}
+    HeightValue: 0.3
+  - HeightColor: {r: 0.20981114, g: 0.6698113, b: 0.16113384, a: 1}
+    HeightValue: 0.5
+  - HeightColor: {r: 0.6981132, g: 0.5004559, b: 0.3523496, a: 1}
+    HeightValue: 0.7
+  - HeightColor: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
+    HeightValue: 0.8
+  - HeightColor: {r: 1, g: 1, b: 1, a: 1}
+    HeightValue: 0.9
   _renderer: {fileID: 2114840350}
 --- !u!4 &1134409377
 Transform:
@@ -450,3 +525,4 @@ SceneRoots:
   - {fileID: 963194228}
   - {fileID: 705507995}
   - {fileID: 1134409377}
+  - {fileID: 236232025}

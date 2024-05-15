@@ -2,9 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class ColorMapHeightColorData
+{
+    public Color HeightColor;
+    public float HeightValue;
+}
+
 public class ColorMapGenerator
 {
-    public static Color[] GenerateBlackWhiteColorMapFromWorldHeightMap(Dictionary<Vector2Int, float[,]> worldDictionary)
+    public static Color[] GenerateColorMapFromWorldHeightMap(Dictionary<Vector2Int, float[,]> worldDictionary, List<ColorMapHeightColorData> heightColorData)
     {
         var chunkCount = worldDictionary.Keys.Count;
 
@@ -55,7 +62,15 @@ public class ColorMapGenerator
                     for (int yChunk = 0; yChunk < chunkHeight; yChunk++)
                     {
                         var heightMapSample = worldChunkHeightMap[xChunk, yChunk];
-                        var heightMapSampleColor = Color.Lerp(Color.black, Color.white, heightMapSample);
+                        var heightMapSampleColor = Color.black;
+                        for (int i = 0; i < heightColorData.Count; i++)
+                        {
+                            var colorData = heightColorData[i];
+                            if (heightMapSample >= colorData.HeightValue)
+                            {
+                                heightMapSampleColor = colorData.HeightColor;
+                            }
+                        }
 
                         var currentSampledWorldXCoordinate = (xWorld * chunkWidth) + xChunk;
                         var currentSampledWorldYCoordinate = ((yWorld * chunkHeight) + yChunk) * worldWidth;
