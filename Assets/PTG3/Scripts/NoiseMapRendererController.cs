@@ -1,11 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public enum NoiseMapRenderType
 {
     Plane,
     Mesh
+}
+
+[CustomEditor(typeof(NoiseMapRendererController))]
+public class NoiseMapRendererControllerEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+
+        NoiseMapRendererController myScript = (NoiseMapRendererController)target;
+        if (GUILayout.Button("Generate"))
+        {
+            myScript.Generate();
+        }
+    }
 }
 
 public class NoiseMapRendererController : MonoBehaviour
@@ -75,7 +91,7 @@ public class NoiseMapRendererController : MonoBehaviour
         _meshRenderer.sharedMaterial.mainTexture = texture;
     }
 
-    private void OnValidate()
+    public void Generate()
     {
         _renderer.gameObject.SetActive(false);
         _meshRenderer.gameObject.SetActive(false);
