@@ -5,10 +5,8 @@ using UnityEngine;
 public class NoiseMapGenerator
 {
     public static Dictionary<Vector2Int, float[,]> GeneratePerlinNoiseWorldHeightMap(
-        int worldChunkWidth, 
-        int worldChunkHeight, 
-        int chunkWidth, 
-        int chunkHeight, 
+        int worldChunkSize, 
+        int chunkSize, 
         float worldScale, 
         bool falloff, 
         float mainlandSize,
@@ -16,29 +14,31 @@ public class NoiseMapGenerator
         AnimationCurve heightMapHeightCurve,
         int octaves,
         float persistence,
-        float lacunarity)
+        float lacunarity,
+        float heightMultiplier)
     {
         var worldDictionary = new Dictionary<Vector2Int, float[,]>();
 
-        var worldWidth = worldChunkWidth * chunkWidth;
-        var worldHeight = worldChunkHeight * chunkHeight;
+        chunkSize += 1;
 
-        var widthScale = 1f / (float)worldChunkWidth;
-        var heightScale = 1f / (float)worldChunkHeight;
+        var worldSize = worldChunkSize * chunkSize;
 
-        for (int xWorld = 0; xWorld < worldChunkWidth; xWorld++)
+        var widthScale = 1f / (float)worldChunkSize;
+        var heightScale = 1f / (float)worldChunkSize;
+
+        for (int xWorld = 0; xWorld < worldChunkSize; xWorld++)
         {
-            for (int yWorld = 0; yWorld < worldChunkHeight; yWorld++)
+            for (int yWorld = 0; yWorld < worldChunkSize; yWorld++)
             {
                 var worldCoordinate = new Vector2Int(xWorld, yWorld);
 
-                var xWorldSamplePosition = ((float)xWorld * (float)chunkWidth) / (float)worldWidth;
-                var yWorldSamplePosition = ((float)yWorld * (float)chunkHeight) / (float)worldHeight;
+                var xWorldSamplePosition = ((float)xWorld * (float)chunkSize) / (float)worldSize;
+                var yWorldSamplePosition = ((float)yWorld * (float)chunkSize) / (float)worldSize;
 
-                var chunkHeightMap = new float[chunkWidth, chunkHeight];
-                for (int xChunk = 0; xChunk < chunkWidth; xChunk++)
+                var chunkHeightMap = new float[chunkSize, chunkSize];
+                for (int yChunk = 0; yChunk < chunkSize; yChunk++)
                 {
-                    for (int yChunk = 0; yChunk < chunkHeight; yChunk++)
+                    for (int xChunk = 0; xChunk < chunkSize; xChunk++)
                     {
                         var amplitude = 1f;
                         var frequency = 1f;
@@ -47,8 +47,8 @@ public class NoiseMapGenerator
 
                         for (int i = 0; i < octaves; i++)
                         {
-                            var xChunkSamplePosition = ((xWorldSamplePosition + ((float)xChunk / (float)worldWidth)) / widthScale) * worldScale * frequency;
-                            var yChunkSamplePosition = ((yWorldSamplePosition + ((float)yChunk / (float)worldHeight)) / heightScale) * worldScale * frequency;
+                            var xChunkSamplePosition = ((xWorldSamplePosition + ((float)xChunk / (float)worldSize)) / widthScale) * worldScale * frequency;
+                            var yChunkSamplePosition = ((yWorldSamplePosition + ((float)yChunk / (float)worldSize)) / heightScale) * worldScale * frequency;
 
                             var sample = Mathf.PerlinNoise(xChunkSamplePosition, yChunkSamplePosition);
 
@@ -60,10 +60,10 @@ public class NoiseMapGenerator
 
                         if (falloff)
                         {
-                            float falloffValue = EvaluateWorldFalloffMap(xWorld * chunkWidth + xChunk, yWorld * chunkHeight + yChunk, worldWidth, worldHeight, mainlandSize, falloffTransitionWidth);
+                            float falloffValue = EvaluateWorldFalloffMap(xWorld * chunkSize + xChunk, yWorld * chunkSize + yChunk, worldSize, worldSize, mainlandSize, falloffTransitionWidth);
                             noiseHeight -= falloffValue;
                         }
-                        chunkHeightMap[xChunk, yChunk] = Mathf.Clamp01(heightMapHeightCurve.Evaluate(noiseHeight));
+                        chunkHeightMap[xChunk, yChunk] = heightMapHeightCurve.Evaluate(noiseHeight) * heightMultiplier;
                     }
                 }
 

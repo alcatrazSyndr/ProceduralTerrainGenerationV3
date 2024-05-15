@@ -27,10 +27,8 @@ public class NoiseMapRendererControllerEditor : Editor
 public class NoiseMapRendererController : MonoBehaviour
 {
     [Header("Data")]
-    [SerializeField] private int _chunkWidth = 255;
-    [SerializeField] private int _chunkHeight = 255;
-    [SerializeField] private int _worldWidth = 1;
-    [SerializeField] private int _worldHeight = 1;
+    [SerializeField] private int _chunkSize = 255;
+    [SerializeField] private int _worldSize = 1;
     [SerializeField] private float _worldScale = 4f;
     [SerializeField] private bool _falloff = true;
     [Range(0f, 1f)]
@@ -58,7 +56,7 @@ public class NoiseMapRendererController : MonoBehaviour
 
     private void SetMeshRendererTexture()
     {
-        var worldData = NoiseMapGenerator.GeneratePerlinNoiseWorldHeightMap(_worldWidth, _worldHeight, _chunkWidth, _chunkHeight, _worldScale, _falloff, _mainlandSize, _falloffTransitionWidth, _heightMapHeightCurve, _octaves, _persistence, _lacunarity);
+        var worldData = NoiseMapGenerator.GeneratePerlinNoiseWorldHeightMap(_worldSize, _chunkSize, _worldScale, _falloff, _mainlandSize, _falloffTransitionWidth, _heightMapHeightCurve, _octaves, _persistence, _lacunarity, _heightMultiplier);
 
         if (_hydraulicErosion)
         {
@@ -66,15 +64,15 @@ public class NoiseMapRendererController : MonoBehaviour
         }
 
         var colorMap = ColorMapGenerator.GenerateColorMapFromWorldHeightMap(worldData, _blackAndWhite, _heightColorData);
-        var texture = TextureGenerator.GenerateTextureFromColorMap(colorMap, _worldWidth * _chunkWidth, _worldHeight * _chunkHeight);
+        var texture = TextureGenerator.GenerateTextureFromColorMap(colorMap, _worldSize * _chunkSize, _worldSize * _chunkSize);
 
         _renderer.sharedMaterial.mainTexture = texture;
-        _renderer.transform.localScale = new Vector3(-_worldWidth * _chunkWidth, 1f, _worldHeight * _chunkHeight) / 10f;
+        _renderer.transform.localScale = new Vector3(-_worldSize * _chunkSize, 1f, _worldSize * _chunkSize) / 10f;
     }
 
     private void SetSingleMeshRendererTexture()
     {
-        var worldData = NoiseMapGenerator.GeneratePerlinNoiseWorldHeightMap(_worldWidth, _worldHeight, _chunkWidth, _chunkHeight, _worldScale, _falloff, _mainlandSize, _falloffTransitionWidth, _heightMapHeightCurve, _octaves, _persistence, _lacunarity);
+        var worldData = NoiseMapGenerator.GeneratePerlinNoiseWorldHeightMap(_worldSize, _chunkSize, _worldScale, _falloff, _mainlandSize, _falloffTransitionWidth, _heightMapHeightCurve, _octaves, _persistence, _lacunarity, _heightMultiplier);
 
         if (_hydraulicErosion)
         {
@@ -82,9 +80,9 @@ public class NoiseMapRendererController : MonoBehaviour
         }
 
         var colorMap = ColorMapGenerator.GenerateColorMapFromWorldHeightMap(worldData, _blackAndWhite, _heightColorData);
-        var texture = TextureGenerator.GenerateTextureFromColorMap(colorMap, _worldWidth * _chunkWidth, _worldHeight * _chunkHeight);
+        var texture = TextureGenerator.GenerateTextureFromColorMap(colorMap, _worldSize * _chunkSize, _worldSize * _chunkSize);
 
-        var mesh = NoiseMapMeshGenerator.GenerateTerrainMesh(worldData[Vector2Int.zero], _heightMultiplier);
+        var mesh = NoiseMapMeshGenerator.GenerateTerrainMesh(worldData[Vector2Int.zero]);
         mesh.RecalculateNormals();
 
         _meshFilter.mesh = mesh;
@@ -96,7 +94,7 @@ public class NoiseMapRendererController : MonoBehaviour
         _renderer.gameObject.SetActive(false);
         _meshRenderer.gameObject.SetActive(false);
 
-        if (_renderType == NoiseMapRenderType.Mesh && _worldHeight == 1 && _worldWidth == 1)
+        if (_renderType == NoiseMapRenderType.Mesh && _worldSize == 1 && _worldSize == 1)
         {
             _meshRenderer.gameObject.SetActive(true);
             SetSingleMeshRendererTexture();
