@@ -33,6 +33,7 @@ public class NoiseMapRendererController : MonoBehaviour
     [SerializeField] private float _heightMultiplier = 1f;
     [SerializeField] private NoiseMapRenderType _renderType = NoiseMapRenderType.Plane;
     [SerializeField] private bool _hydraulicErosion = false;
+    [SerializeField] private int _hydraulicErosionIterations = 30000;
 
     [Header("Component References")]
     [SerializeField] private Renderer _renderer;
@@ -45,7 +46,7 @@ public class NoiseMapRendererController : MonoBehaviour
 
         if (_hydraulicErosion)
         {
-            worldData = HeightMapHydraulicErosionGenerator.SimulateHydraulicErosionForWorldHeightMaps(worldData);
+            worldData = HeightMapHydraulicErosionGenerator.SimulateHydraulicErosionForWorldHeightMaps(worldData, _hydraulicErosionIterations);
         }
 
         var colorMap = ColorMapGenerator.GenerateColorMapFromWorldHeightMap(worldData, _blackAndWhite, _heightColorData);
@@ -61,7 +62,7 @@ public class NoiseMapRendererController : MonoBehaviour
 
         if (_hydraulicErosion)
         {
-            worldData = HeightMapHydraulicErosionGenerator.SimulateHydraulicErosionForWorldHeightMaps(worldData);
+            worldData = HeightMapHydraulicErosionGenerator.SimulateHydraulicErosionForWorldHeightMaps(worldData, _hydraulicErosionIterations);
         }
 
         var colorMap = ColorMapGenerator.GenerateColorMapFromWorldHeightMap(worldData, _blackAndWhite, _heightColorData);
