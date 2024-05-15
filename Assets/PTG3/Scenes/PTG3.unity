@@ -375,8 +375,8 @@ MonoBehaviour:
   _worldHeight: 1
   _worldScale: 4
   _falloff: 1
-  _mainlandSize: 0.9
-  _falloffTransitionWidth: 6
+  _mainlandSize: 1
+  _falloffTransitionWidth: 5.6
   _heightMapHeightCurve:
     serializedVersion: 2
     m_Curve:
@@ -416,8 +416,14 @@ MonoBehaviour:
     HeightValue: 0.7
   - HeightColor: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
     HeightValue: 0.8
-  - HeightColor: {r: 1, g: 1, b: 1, a: 1}
+  - HeightColor: {r: 0.9150943, g: 0.9150943, b: 0.9150943, a: 1}
     HeightValue: 0.9
+  - HeightColor: {r: 1, g: 1, b: 1, a: 1}
+    HeightValue: 0.95
+  _blackAndWhite: 0
+  _octaves: 2
+  _persistence: 0.17
+  _lacunarity: 4.3
   _renderer: {fileID: 2114840350}
 --- !u!4 &1134409377
 Transform:

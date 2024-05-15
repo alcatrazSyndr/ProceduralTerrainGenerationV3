@@ -13,7 +13,10 @@ public class NoiseMapGenerator
         bool falloff, 
         float mainlandSize,
         float falloffTransitionWidth,
-        AnimationCurve heightMapHeightCurve)
+        AnimationCurve heightMapHeightCurve,
+        int octaves,
+        float persistence,
+        float lacunarity)
     {
         var worldDictionary = new Dictionary<Vector2Int, float[,]>();
 
@@ -37,18 +40,30 @@ public class NoiseMapGenerator
                 {
                     for (int yChunk = 0; yChunk < chunkHeight; yChunk++)
                     {
-                        var xChunkSamplePosition = ((xWorldSamplePosition + ((float)xChunk / (float)worldWidth)) / widthScale) * worldScale;
-                        var yChunkSamplePosition = ((yWorldSamplePosition + ((float)yChunk / (float)worldHeight)) / heightScale) * worldScale;
+                        var amplitude = 1f;
+                        var frequency = 1f;
 
-                        var sample = Mathf.PerlinNoise(xChunkSamplePosition, yChunkSamplePosition);
+                        var noiseHeight = 0f;
+
+                        for (int i = 0; i < octaves; i++)
+                        {
+                            var xChunkSamplePosition = ((xWorldSamplePosition + ((float)xChunk / (float)worldWidth)) / widthScale) * worldScale * frequency;
+                            var yChunkSamplePosition = ((yWorldSamplePosition + ((float)yChunk / (float)worldHeight)) / heightScale) * worldScale * frequency;
+
+                            var sample = Mathf.PerlinNoise(xChunkSamplePosition, yChunkSamplePosition);
+
+                            noiseHeight += sample * amplitude;
+
+                            amplitude *= persistence;
+                            frequency *= lacunarity;
+                        }
 
                         if (falloff)
                         {
                             float falloffValue = EvaluateWorldFalloffMap(xWorld * chunkWidth + xChunk, yWorld * chunkHeight + yChunk, worldWidth, worldHeight, mainlandSize, falloffTransitionWidth);
-                            sample -= falloffValue;
+                            noiseHeight -= falloffValue;
                         }
-
-                        chunkHeightMap[xChunk, yChunk] = Mathf.Clamp01(heightMapHeightCurve.Evaluate(sample));
+                        chunkHeightMap[xChunk, yChunk] = Mathf.Clamp01(heightMapHeightCurve.Evaluate(noiseHeight));
                     }
                 }
 

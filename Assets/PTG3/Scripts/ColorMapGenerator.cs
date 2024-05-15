@@ -11,7 +11,7 @@ public class ColorMapHeightColorData
 
 public class ColorMapGenerator
 {
-    public static Color[] GenerateColorMapFromWorldHeightMap(Dictionary<Vector2Int, float[,]> worldDictionary, List<ColorMapHeightColorData> heightColorData)
+    public static Color[] GenerateColorMapFromWorldHeightMap(Dictionary<Vector2Int, float[,]> worldDictionary, bool blackAndWhite, List<ColorMapHeightColorData> heightColorData)
     {
         var chunkCount = worldDictionary.Keys.Count;
 
@@ -63,12 +63,19 @@ public class ColorMapGenerator
                     {
                         var heightMapSample = worldChunkHeightMap[xChunk, yChunk];
                         var heightMapSampleColor = Color.black;
-                        for (int i = 0; i < heightColorData.Count; i++)
+                        if (blackAndWhite)
                         {
-                            var colorData = heightColorData[i];
-                            if (heightMapSample >= colorData.HeightValue)
+                            heightMapSampleColor = Color.Lerp(Color.black, Color.white, heightMapSample);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < heightColorData.Count; i++)
                             {
-                                heightMapSampleColor = colorData.HeightColor;
+                                var colorData = heightColorData[i];
+                                if (heightMapSample >= colorData.HeightValue)
+                                {
+                                    heightMapSampleColor = colorData.HeightColor;
+                                }
                             }
                         }
 
