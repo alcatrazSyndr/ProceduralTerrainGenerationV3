@@ -15,9 +15,9 @@ public class NoiseMapMeshGenerator
         var meshData = new NoiseMapMeshData(width, height);
         var vertexIndex = 0;
 
-        for (int x = 0; x < width; x++)
+        for (int y = 0; y < height; y++)
         {
-            for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
             {
                 meshData.Vertices[vertexIndex] = new Vector3(topLeftX + x, heightMap[x, y] * heightMultiplier, topLeftZ - y);
                 meshData.UVs[vertexIndex] = new Vector2(x / (float)width, y / (float)height);

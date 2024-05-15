@@ -45,7 +45,7 @@ public class NoiseMapRendererController : MonoBehaviour
         var texture = TextureGenerator.GenerateTextureFromColorMap(colorMap, _worldWidth * _chunkWidth, _worldHeight * _chunkHeight);
 
         _renderer.sharedMaterial.mainTexture = texture;
-        _renderer.transform.localScale = new Vector3(_worldWidth * _chunkWidth, 1f, _worldHeight * _chunkHeight);
+        _renderer.transform.localScale = new Vector3(-_worldWidth * _chunkWidth, 1f, _worldHeight * _chunkHeight) / 10f;
     }
 
     private void SetSingleMeshRendererTexture()
@@ -59,7 +59,6 @@ public class NoiseMapRendererController : MonoBehaviour
 
         _meshFilter.mesh = mesh;
         _meshRenderer.sharedMaterial.mainTexture = texture;
-        //_meshRenderer.transform.localScale = new Vector3(_worldWidth * _chunkWidth, 1f, _worldHeight * _chunkHeight);
     }
 
     private void OnValidate()
