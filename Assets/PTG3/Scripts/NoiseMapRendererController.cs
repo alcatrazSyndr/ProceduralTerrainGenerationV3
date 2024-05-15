@@ -32,6 +32,7 @@ public class NoiseMapRendererController : MonoBehaviour
     [SerializeField] private float _lacunarity = 4.3f;
     [SerializeField] private float _heightMultiplier = 1f;
     [SerializeField] private NoiseMapRenderType _renderType = NoiseMapRenderType.Plane;
+    [SerializeField] private bool _hydraulicErosion = false;
 
     [Header("Component References")]
     [SerializeField] private Renderer _renderer;
@@ -41,6 +42,12 @@ public class NoiseMapRendererController : MonoBehaviour
     private void SetMeshRendererTexture()
     {
         var worldData = NoiseMapGenerator.GeneratePerlinNoiseWorldHeightMap(_worldWidth, _worldHeight, _chunkWidth, _chunkHeight, _worldScale, _falloff, _mainlandSize, _falloffTransitionWidth, _heightMapHeightCurve, _octaves, _persistence, _lacunarity);
+
+        if (_hydraulicErosion)
+        {
+            worldData = HeightMapHydraulicErosionGenerator.SimulateHydraulicErosionForWorldHeightMaps(worldData);
+        }
+
         var colorMap = ColorMapGenerator.GenerateColorMapFromWorldHeightMap(worldData, _blackAndWhite, _heightColorData);
         var texture = TextureGenerator.GenerateTextureFromColorMap(colorMap, _worldWidth * _chunkWidth, _worldHeight * _chunkHeight);
 
@@ -51,6 +58,12 @@ public class NoiseMapRendererController : MonoBehaviour
     private void SetSingleMeshRendererTexture()
     {
         var worldData = NoiseMapGenerator.GeneratePerlinNoiseWorldHeightMap(_worldWidth, _worldHeight, _chunkWidth, _chunkHeight, _worldScale, _falloff, _mainlandSize, _falloffTransitionWidth, _heightMapHeightCurve, _octaves, _persistence, _lacunarity);
+
+        if (_hydraulicErosion)
+        {
+            worldData = HeightMapHydraulicErosionGenerator.SimulateHydraulicErosionForWorldHeightMaps(worldData);
+        }
+
         var colorMap = ColorMapGenerator.GenerateColorMapFromWorldHeightMap(worldData, _blackAndWhite, _heightColorData);
         var texture = TextureGenerator.GenerateTextureFromColorMap(colorMap, _worldWidth * _chunkWidth, _worldHeight * _chunkHeight);
 
